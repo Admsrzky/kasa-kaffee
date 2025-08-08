@@ -19,6 +19,11 @@ class TransactionItems extends Model
         return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function food()
     {
         return $this->belongsTo(Foods::class, 'foods_id');

@@ -5,21 +5,22 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FoodsResource\Pages;
 use App\Models\Foods;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Number;
 
 class FoodsResource extends Resource
 {
@@ -75,7 +76,7 @@ class FoodsResource extends Resource
                             ->required()
                             ->numeric()
                             ->prefix('Rp')
-                            ->live(onBlur: true) // Gunakan live() untuk memicu perubahan saat field tidak fokus
+                            ->reactive() // UBAH: Gunakan reactive agar lebih konsisten
                             ->columnSpan(1),
 
                         Toggle::make('is_promo')
@@ -96,15 +97,8 @@ class FoodsResource extends Resource
                             ->required(fn($get) => $get('is_promo'))
                             ->reactive()
                             ->hidden(fn($get) => !$get('is_promo'))
-                            ->afterStateUpdated(function ($set, $get, $state) {
-                                // Hitung harga diskon saat is_promo, harga, atau diskon berubah
-                                if ($get('is_promo') && $get('price') && $state) {
-                                    $discount = ($get('price') * (int)$state) / 100;
-                                    $set('price_afterdiscount', (float) $get('price') - $discount);
-                                } else {
-                                    $set('price_afterdiscount', $get('price'));
-                                }
-                            })
+                            // UBAH: Ganti logika kompleks dengan panggilan fungsi sederhana
+                            ->afterStateUpdated(fn($get, $set) => self::updatePriceAfterDiscount($get, $set))
                             ->columnSpan(1),
 
                         TextInput::make('price_afterdiscount')
@@ -144,7 +138,16 @@ class FoodsResource extends Resource
 
                 TextColumn::make('price_afterdiscount')
                     ->label('Harga Diskon')
-                    ->money('IDR', locale: 'id_ID')
+                    ->formatStateUsing(function ($state) {
+                        // Jika $state (nilai dari price_afterdiscount) bernilai null, 0, atau kosong,
+                        // maka tampilkan 'No diskon'.
+                        if (blank($state) || $state <= 0) {
+                            return 'No diskon';
+                        }
+
+                        // Jika ada nilainya, format sebagai mata uang Rupiah.
+                        return Number::currency($state, 'IDR', 'id_ID');
+                    })
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
@@ -176,11 +179,29 @@ class FoodsResource extends Resource
             ]);
     }
 
+
+
     public static function getRelations(): array
     {
         return [
             //
         ];
+    }
+
+    // TAMBAHKAN FUNGSI PRIVATE BARU INI DI DALAM CLASS
+    private static function updatePriceAfterDiscount(callable $get, callable $set): void
+    {
+        $price = (float) $get('price');
+        $percent = (int) $get('percent');
+
+        // Hanya hitung jika toggle promo aktif dan ada nilai harga & persen
+        if ($get('is_promo') && $price > 0 && $percent > 0) {
+            $discountAmount = ($price * $percent) / 100;
+            $set('price_afterdiscount', $price - $discountAmount);
+        } else {
+            // KUNCI PERBAIKAN: Set ke null jika tidak ada promo
+            $set('price_afterdiscount', null);
+        }
     }
 
     public static function getPages(): array

@@ -6,18 +6,21 @@ use App\Filament\Resources\TransactionItemsResource\Pages\CreateTransactionItems
 use App\Filament\Resources\TransactionItemsResource\Pages\EditTransactionItems;
 use App\Filament\Resources\TransactionItemsResource\Pages\ListTransactionItems;
 
-use App\Models\TransactionItems;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Models\Transaction;
+use App\Models\TransactionItems;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class TransactionResource extends Resource
 {
@@ -135,7 +138,63 @@ class TransactionResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([])
+            ->filters([
+                // --- AWAL KODE FILTER ---
+
+                SelectFilter::make('payment_status')
+                    ->label('Status Pembayaran')
+                    ->options([
+                        'SUCCESS' => 'Sukses',
+                        'PAID'    => 'Dibayar',
+                        'PENDING' => 'Menunggu',
+                        'EXPIRED' => 'Kadaluarsa',
+                        'FAILED'  => 'Gagal',
+                    ])
+                    ->multiple(), // Hapus ini jika hanya ingin filter satu status
+
+                SelectFilter::make('created_month')
+                    ->label('Bulan')
+                    ->options([
+                        '01' => 'Januari',
+                        '02' => 'Februari',
+                        '03' => 'Maret',
+                        '04' => 'April',
+                        '05' => 'Mei',
+                        '06' => 'Juni',
+                        '07' => 'Juli',
+                        '08' => 'Agustus',
+                        '09' => 'September',
+                        '10' => 'Oktober',
+                        '11' => 'November',
+                        '12' => 'Desember',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn(Builder $query, $value): Builder => $query->whereMonth('created_at', $value)
+                        );
+                    }),
+
+                SelectFilter::make('created_year')
+                    ->label('Tahun')
+                    ->options(
+                        // Mengambil tahun-tahun yang ada transaksinya saja secara dinamis
+                        Transaction::query()
+                            ->selectRaw('YEAR(created_at) as year')
+                            ->distinct()
+                            ->orderBy('year', 'desc')
+                            ->pluck('year', 'year')
+                            ->toArray()
+                    )
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn(Builder $query, $value): Builder => $query->whereYear('created_at', $value)
+                        );
+                    }),
+
+                // --- AKHIR KODE FILTER ---
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('See transaction')
@@ -145,6 +204,11 @@ class TransactionResource extends Resource
                             'parent' => $record->id,
                         ])
                     ),
+                Action::make('print')
+                    ->label('Print Struk')
+                    ->icon('heroicon-o-printer')
+                    ->color('warning')
+                    ->url(fn(Transaction $record) => route('transaction.print', $record), true), // 'true' untuk buka di tab baru
             ])
             ->bulkActions([]);
     }

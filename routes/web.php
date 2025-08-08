@@ -1,20 +1,22 @@
 <?php
 
-use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\QRController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Middleware\CheckTableNumber;
 use App\Livewire\Pages\AllFoodPage;
 use App\Livewire\Pages\CartPage;
 use App\Livewire\Pages\CheckoutPage;
 use App\Livewire\Pages\DetailPage;
 use App\Livewire\Pages\FavoritePage;
-use App\Livewire\Pages\PromoPage;
 use App\Livewire\Pages\HomePage;
 use App\Livewire\Pages\PaymentFailurePage;
 use App\Livewire\Pages\PaymentSuccessPage;
+use App\Livewire\Pages\PromoPage;
 use App\Livewire\Pages\ScanPage;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
+
 
 Route::middleware(CheckTableNumber::class)->group(function () {
     // Beranda | Home
@@ -47,6 +49,8 @@ Route::middleware(CheckTableNumber::class)->controller(TransactionController::cl
 
 // Webhook update pembayaran
 Route::post('/payment/webhook', [TransactionController::class, 'handleWebhook'])->name('payment.webhook');
+Route::get('/transactions/{transaction}/print', [PrintController::class, 'printTransaction'])->name('transaction.print');
+
 
 Route::controller(QRController::class)->group(function () {
     Route::post('/store-qr-result', 'storeResult')->name('product.scan.store');

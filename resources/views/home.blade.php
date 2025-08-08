@@ -71,12 +71,13 @@
         <div wire:loading.remove>
         @if ($term == "")
             <div>
+                <div class="mt-4">
                 <div class="container flex items-center justify-between">
                     <h3 class="text-xl font-semibold text-black-100">
-                        Today's promo
+                        Produk Terlaris
                     </h3>
                     <a
-                        href="/food/promo"
+                        href="/food/favorite"
                         wire:navigate
                         class="block font-semibold text-primary-50"
                     >
@@ -84,6 +85,27 @@
                     </a>
                 </div>
                 <div
+                    class="flex items-stretch py-4 ml-4 space-x-4 overflow-x-auto hide-scrollbar"
+                >
+                    @if (isset($favorites) && count($favorites) > 0)
+                        @foreach ($favorites as $favorite)
+                            <livewire:components.food-card
+                                wire:key="favorite-{{ $favorite->id }}"
+                                :data="$favorite"
+                                :categories="$categories"
+                                :isGrid="false"
+                            />
+                        @endforeach
+                    @else
+                        <div class="w-full my-2">
+                            <p class="text-center text-black-70">
+                                Tidak Ada Produk Terlaris
+                            </p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+                {{-- <div
                     class="flex items-stretch gap-4 py-4 ml-4 overflow-x-auto hide-scrollbar"
                 >
                     @if (isset($promos) && count($promos) > 0)
@@ -102,7 +124,7 @@
                             </p>
                         </div>
                     @endif
-                </div>
+                </div> --}}
             </div>
 
             <div class="container">

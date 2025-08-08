@@ -21,7 +21,7 @@ class TransactionItemsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function shouldRegisterNavigation() : bool
+    public static function shouldRegisterNavigation(): bool
     {
         return false;
     }
@@ -101,8 +101,7 @@ class TransactionItemsResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-            ])
+            ->actions([])
             ->bulkActions([]);
     }
 

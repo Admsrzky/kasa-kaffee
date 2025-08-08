@@ -24,7 +24,7 @@
                 Cart
             </span>
         </a>
-        <a class="flex flex-col items-center" href="/food/promo" wire:navigate>
+        {{-- <a class="flex flex-col items-center" href="/food/promo" wire:navigate>
             <img
                 src="{{ request()->routeIs("product.promo") ? asset("assets/icons/promo-active-icon.svg") : asset("assets/icons/promo-icon.svg") }}"
                 alt="Promo"
@@ -34,7 +34,7 @@
             >
                 Promo
             </span>
-        </a>
+        </a> --}}
         <a class="flex flex-col items-center" href="/food" wire:navigate>
             <img
                 src="{{ request()->routeIs("product.index") ? asset("assets/icons/food-active-icon.svg") : asset("assets/icons/food-icon.svg") }}"
@@ -43,7 +43,7 @@
             <span
                 class="{{ request()->routeIs("product.index") ? "text-primary-50" : "text-black-100" }} mt-1 text-sm"
             >
-                All Food
+                All Menu
             </span>
         </a>
     </div>
