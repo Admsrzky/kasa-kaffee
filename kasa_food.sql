@@ -327,6 +327,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('admin','user') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -336,9 +337,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table kasa_food.users: ~0 rows (approximately)
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-	(1, 'Admin Kasa', 'adminkasa@gmail.com', NULL, '$2y$12$O6INl9ML.bN1po1bPQyc..uPxlhJfTFSTnzl6h669Fcl0BeI7vNmO', NULL, '2025-08-01 04:28:53', '2025-08-01 04:28:53');
+-- Dumping data for table kasa_food.users: ~1 rows (approximately)
+INSERT INTO `users` (`id`, `name`, `email`, `role`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+	(1, 'Admin Kasa', 'adminkasa@gmail.com', 'admin', NULL, '$2y$12$O6INl9ML.bN1po1bPQyc..uPxlhJfTFSTnzl6h669Fcl0BeI7vNmO', NULL, '2025-08-01 04:28:53', '2025-08-01 04:28:53');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
