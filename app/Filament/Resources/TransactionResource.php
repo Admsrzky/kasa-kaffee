@@ -28,7 +28,7 @@ class TransactionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static ?string $navigationLabel = 'Transaksi Penjuala';
+    protected static ?string $navigationLabel = 'Transaksi Penjualan';
 
     protected static ?string $navigationGroup = 'Manajemen Transaksi';
 
