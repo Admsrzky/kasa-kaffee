@@ -3,11 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel; // <-- TAMBAHKAN INI
+use Filament\Models\Contracts\FilamentUser; // <-- INI PATH YANG BENAR
+use Laravel\Sanctum\HasApiTokens; // <-- TAMBAHKAN INI
+use Laravel\Jetstream\HasProfilePhoto;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -44,5 +49,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Logika ini mengizinkan akses jika ID panel adalah 'admin'
+        // DAN peran pengguna di database adalah 'admin'.
+        return $panel->getId() === 'admin' && $this->role === 'admin';
     }
 }
