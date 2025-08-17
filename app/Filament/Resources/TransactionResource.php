@@ -210,7 +210,11 @@ class TransactionResource extends Resource
                     ->color('warning')
                     ->url(fn(Transaction $record) => route('transaction.print', $record), true), // 'true' untuk buka di tab baru
             ])
-            ->bulkActions([]);
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getRelations(): array
