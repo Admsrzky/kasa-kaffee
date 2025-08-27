@@ -6,7 +6,6 @@ use App\Livewire\Traits\CategoryFilterTrait;
 use App\Models\Category;
 use App\Models\Foods;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class FavoritePage extends Component

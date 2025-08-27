@@ -2,10 +2,9 @@
     <livewire:components.page-title-nav
         :title="'Favorite Food'"
         wire:key="{{ str()->random(50) }}"
-        :hasBack="true"
     ></livewire:components.page-title-nav>
 
-    <div class="container mb-24 grid grid-cols-2 items-center gap-4">
+    <div class="container grid items-center grid-cols-2 gap-4 mb-24">
         @if (isset($filteredProducts) && count($filteredProducts) > 0)
             @foreach ($filteredProducts as $favorite)
                 <livewire:components.food-card
@@ -15,7 +14,7 @@
                 />
             @endforeach
         @else
-            <div class="col-span-2 my-2 w-full">
+            <div class="w-full col-span-2 my-2">
                 <p class="text-center text-black-70">No favorite available</p>
             </div>
         @endif

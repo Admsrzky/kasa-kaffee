@@ -1,5 +1,5 @@
-<div
-    wire:click="showDetails"
+<a
+    href="{{ route('product.detail', ['id' => $data->id]) }}"
     class="{{ $isGrid ? "h-full" : "" }} col-span-1 flex min-w-[40%] max-w-[180px] flex-1 flex-col rounded-2xl bg-white p-2 font-poppins transition-all hover:ring-2 hover:ring-inset hover:ring-primary-50"
 >
     <div class="relative">
@@ -27,7 +27,7 @@
         <img
             src="{{ Storage::url($data->image) }}"
             alt="{{ $data->name }}"
-            class="aspect-square w-full rounded-xl object-cover"
+            class="object-cover w-full aspect-square rounded-xl"
         />
     </div>
     <div>
@@ -42,7 +42,7 @@
                 </span>
                 @if ($data->is_promo)
                     <span
-                        class="-mt-1 block text-xs text-black-40 line-through"
+                        class="block -mt-1 text-xs line-through text-black-40"
                     >
                         {{ number_format($data->price, 0, ",", ".") }}
                     </span>
@@ -50,7 +50,7 @@
             </div>
         </div>
         <p
-            class="mt-1 flex items-center gap-1 text-xs font-medium text-primary-60"
+            class="flex items-center gap-1 mt-1 text-xs font-medium text-primary-60"
         >
             <span>
                 <img src="{{ asset("assets/icons/category-icon.svg") }}" />
@@ -60,4 +60,4 @@
             </span>
         </p>
     </div>
-</div>
+</a>
