@@ -74,7 +74,7 @@
                 <div class="mt-4">
                 <div class="container flex items-center justify-between">
                     <h3 class="text-xl font-semibold text-black-100">
-                        Produk Terlaris
+                        Produk Terlariss
                     </h3>
                     <a
                         href="/food/favorite"
